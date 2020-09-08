@@ -17,7 +17,7 @@ export default class Search {
             const res = await axios(`${proxy}https://forkify-api.herokuapp.com/api/search?q=${this.query}`);
             //we remove the constant and use this.result because we want to save in the object 
             this.result = res.data.recipes
-          //  console.log(this.result)
+            //console.log(this.result)
         }
         //we put error as the argument so that when the promise fails, it will alert us of the reason 
         catch (error) {

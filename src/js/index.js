@@ -27,7 +27,7 @@ async function getResults(query){
 
 import Search from './models/Search';
 import * as searchView from './views/searchView'
-import{elements} from './views/base';
+import{elements,renderLoader,clearLoader} from './views/base';
 /* Global state of the app
  *-Search object
  *- Current recipe object
@@ -48,6 +48,8 @@ const controlSearch=async  ()=>{
         //3. Prepare ui for results
         searchView.clearInput()
         searchView.clearResults();
+        renderLoader(elements.searchRes);
+
         //4. Search for recipes 
         // state.search is a new instance based on the Search class
         await state.search.getResults();
@@ -57,7 +59,9 @@ const controlSearch=async  ()=>{
         // in the getresults() method, we can access the result from the api search.
        // console.log(state.search.result)
        //we now add the renderresults function from searchview.js
+       clearLoader();
        searchView.renderResults(state.search.result)
+
       
     }
 
@@ -66,6 +70,21 @@ const controlSearch=async  ()=>{
  elements.searchButton.addEventListener("submit",e=>{
     e.preventDefault();
     controlSearch()
+ })
+
+
+ //using event delegation so buttons will click when clicked on(we target the div class searchResPages since the buttons arent there yet)
+ elements.searchResPages.addEventListener("click",e=>{
+     const btn=e.target.closest(".btn-inline");
+     console.log(btn)
+     if (btn){
+         //shows the data on the buttons onces clicked data html attribute
+         const goToPage=parseInt(btn.dataset.goto,10);
+         searchView.clearResults()
+         //gotopage is page no kind of
+         searchView.renderResults(state.search.result,goToPage)
+     }
+
  })
 
  /** shows how classes and methods imported from search.js can be used in index.js
