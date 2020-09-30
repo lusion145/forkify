@@ -2,6 +2,7 @@
 
 
 import axios from "axios";
+import {proxy} from '../config';
 export default class Search {
     constructor(query) {
         this.query = query;
@@ -9,8 +10,7 @@ export default class Search {
 
     //since its  a method, we remove the function. if it is an async function we just add async to it 
     async getResults() {
-        //we have to use cors
-        const proxy = "https://cors-anywhere.herokuapp.com/";
+       
         //first put the api url
         try {
             //we replace query with this.query
@@ -24,6 +24,7 @@ export default class Search {
             alert(error)
         }
     }
+   
 }
 
 

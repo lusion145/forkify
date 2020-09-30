@@ -26,6 +26,7 @@ async function getResults(query){
 
 
 import Search from './models/Search';
+import Recipe from './models/Recipe';
 import * as searchView from './views/searchView'
 import{elements,renderLoader,clearLoader} from './views/base';
 /* Global state of the app
@@ -37,6 +38,7 @@ import{elements,renderLoader,clearLoader} from './views/base';
  */
  const state={};
 
+/**  SEARCH CONTROLLER */
 const controlSearch=async  ()=>{
     //1. Get query from the view
     const query=searchView.getInput()
@@ -49,7 +51,7 @@ const controlSearch=async  ()=>{
         searchView.clearInput()
         searchView.clearResults();
         renderLoader(elements.searchRes);
-
+        try{
         //4. Search for recipes 
         // state.search is a new instance based on the Search class
         await state.search.getResults();
@@ -62,6 +64,10 @@ const controlSearch=async  ()=>{
        clearLoader();
        searchView.renderResults(state.search.result)
 
+        } catch(error){
+            alert("something went wrong")
+        }
+       
       
     }
 
@@ -96,3 +102,45 @@ search.getResults();
   */
 
 
+/**  RECIPE CONTROLLER */
+
+/**const r =new Recipe(46956);
+r.getRecipe();
+console.log(r)*/
+const controlRecipe=async () =>{
+    //GET ID FROM URL
+    //window.location shows the whole url and .hash shows the hash
+    //replace will replace # with nothing so we have only the numbers 
+    const id=window.location.hash.replace("#","");
+    console.log(id);
+
+    if(id){
+     //PREPARE UI FOR CHANGES
+
+     //CREATE NEW RECIPE OBJECT
+     state.recipe=new Recipe(id);
+      try{
+   //GET RECIPE DATA
+   await state.recipe.getRecipe();
+
+   //CALCULATE TIME AND SERVINGS
+    state.recipe.calcTime();
+    state.recipe.calcServings();
+
+   //RENDER RECIPE
+   console.log(state.recipe);
+  } catch(error){
+      alert ("error processing recipe")
+  }
+      }
+  
+}
+/** 
+//window is global fyi
+window.addEventListener('hashchange',controlRecipe)
+//on page load
+window.addEventListener('load',controlRecipe) */
+
+
+//to use an event listener on multiple events  
+['hashchange','load'].forEach(event=>window.addEventListener(event,controlRecipe));
