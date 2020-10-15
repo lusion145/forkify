@@ -27,7 +27,8 @@ async function getResults(query){
 
 import Search from './models/Search';
 import Recipe from './models/Recipe';
-import * as searchView from './views/searchView'
+import * as searchView from './views/searchView';
+import * as recipeView from './views/recipeView';
 import{elements,renderLoader,clearLoader} from './views/base';
 /* Global state of the app
  *-Search object
@@ -42,6 +43,7 @@ import{elements,renderLoader,clearLoader} from './views/base';
 const controlSearch=async  ()=>{
     //1. Get query from the view
     const query=searchView.getInput()
+   
     console.log(query)
     if (query){
         //2. New search object added to state. Takes query and uses method imported form search.js
@@ -66,6 +68,7 @@ const controlSearch=async  ()=>{
 
         } catch(error){
             alert("something went wrong")
+            clearLoader();
         }
        
       
@@ -77,6 +80,13 @@ const controlSearch=async  ()=>{
     e.preventDefault();
     controlSearch()
  })
+
+/*FOR TESTING SO WE DONT HAVE TO SEARCH ALL THE TIME
+ window.addEventListener('load',e=>{
+    e.preventDefault();
+    controlSearch()
+ }) removed when done working on the recipe model ingredients
+*/
 
 
  //using event delegation so buttons will click when clicked on(we target the div class searchResPages since the buttons arent there yet)
@@ -116,19 +126,25 @@ const controlRecipe=async () =>{
 
     if(id){
      //PREPARE UI FOR CHANGES
-
+     recipeView.clearRecipe();
+     renderLoader(elements.recipe)
      //CREATE NEW RECIPE OBJECT
      state.recipe=new Recipe(id);
+     /**TESTING we will no have access to the recipe in the global object and in the console. when we write r, it shows the recipe in the console.
+     window.r=state.recipe; removed after working on recipe model ingredients arrangement */
       try{
-   //GET RECIPE DATA
+   //GET RECIPE DATA AND PARSE INGREDIENTS
    await state.recipe.getRecipe();
+   state.recipe.parseIngredients();
 
    //CALCULATE TIME AND SERVINGS
     state.recipe.calcTime();
     state.recipe.calcServings();
 
    //RENDER RECIPE
-   console.log(state.recipe);
+   console.log(state.recipe.ingredients);
+   clearLoader()
+   recipeView.renderRecipe(state.recipe)
   } catch(error){
       alert ("error processing recipe")
   }
