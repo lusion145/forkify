@@ -128,6 +128,9 @@ const controlRecipe=async () =>{
      //PREPARE UI FOR CHANGES
      recipeView.clearRecipe();
      renderLoader(elements.recipe)
+
+     //highlight selected search item
+     if(state.search)searchView.higlightSelected(id); 
      //CREATE NEW RECIPE OBJECT
      state.recipe=new Recipe(id);
      /**TESTING we will no have access to the recipe in the global object and in the console. when we write r, it shows the recipe in the console.

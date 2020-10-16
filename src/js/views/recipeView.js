@@ -1,15 +1,34 @@
 import { elements } from './base';
+import {Fraction} from 'fractional';
 export const clearRecipe=()=>{
     elements.recipe.innerHTML='';
 }
 
+const formatCount=count=>{
+    if(count){
+  //count 2.5 --> 2 1/2
+  //count 0.5 --> 1/2
+  //using destructing we split the numbers into integers and decimals, then change to string so we can split them accordingly. we than use map so it returns the destructured values to numbers
+  const[int,dec]=count.toString().split('.').map(el=>parseInt(el,10));
+    if (!dec) {return count};
+    if(int===0){
+        const fr=new Fraction(count);
+        return `${fr.numerator}/${fr.denominator}`;
+    }else{
+        //to make count that is 5/2 show as 2 1/2
+        const fr=new Fraction(count-int);
+        return `${int} ${fr.numerator}/${fr.denominator}`;
+    }
 
+    }
+    return "?";
+};
 const createIngredient = ingredient => `
     <li class="recipe__item">
     <svg class="recipe__icon">
         <use href="img/icons.svg#icon-check"></use>
     </svg>
-    <div class="recipe__count">${ingredient.count}</div>
+    <div class="recipe__count">${formatCount(ingredient.count)}</div>
     <div class="recipe__ingredient">
         <span class="recipe__unit">${ingredient.unit}</span>
         ${ingredient.ingredient}
