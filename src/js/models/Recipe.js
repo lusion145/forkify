@@ -13,6 +13,7 @@ export default class  Recipe{
             this.image=res.data.recipe.image_url
             this.url=res.data.recipe.source_url;
             this.ingredients=res.data.recipe.ingredients;
+            
           
         }
         catch(error){
@@ -95,5 +96,17 @@ export default class  Recipe{
         });
 
         this.ingredients=newIngredients;
+    }
+    updateServings (type){
+        //servings
+        //terniary operator for if "dec" reduce this.servings else increase this.servings
+        const newServings=type==="dec"? this.servings -1 : this.servings +1;
+
+        //ingredients
+        this.ingredients.forEach(ing=>{
+            ing.count =ing.count *(newServings/this.servings);
+        });
+        this.servings=newServings
+
     }
 }

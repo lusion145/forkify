@@ -36,7 +36,7 @@ const createIngredient = ingredient => `
     </li>
 `;
 //WE TAKE OUR INGREDIENTS AND LOOP OVER THEM TO DISPLAY THE RESULTS.SINCE MAP CREATES AND ARRAY AND WE DONT WANT THAT IN THIS INSTNACE WE SIMPLY ADD JOIN METHOD
-export const renderRecipe = recipe => {
+export const renderRecipe =(recipe,isLiked) => {
     //input data from html 
     const markup = `
     
@@ -63,12 +63,12 @@ export const renderRecipe = recipe => {
             <span class="recipe__info-text"> servings</span>
 
             <div class="recipe__info-buttons">
-                <button class="btn-tiny">
+                <button class="btn-tiny btn-decrease">
                     <svg>
                         <use href="img/icons.svg#icon-circle-with-minus"></use>
                     </svg>
                 </button>
-                <button class="btn-tiny">
+                <button class="btn-tiny btn-increase">
                     <svg>
                         <use href="img/icons.svg#icon-circle-with-plus"></use>
                     </svg>
@@ -78,7 +78,7 @@ export const renderRecipe = recipe => {
         </div>
         <button class="recipe__love">
             <svg class="header__likes">
-                <use href="img/icons.svg#icon-heart-outlined"></use>
+                <use href="img/icons.svg#icon-heart${isLiked ? '':'-outlined'}"></use>
             </svg>
         </button>
     </div>
@@ -91,7 +91,7 @@ export const renderRecipe = recipe => {
         ${recipe.ingredients.map(el => createIngredient(el)).join('')}      
         </ul>
 
-        <button class="btn-small recipe__btn">
+        <button class="btn-small recipe__btn recipe__btn--add">
             <svg class="search__icon">
                 <use href="img/icons.svg#icon-shopping-cart"></use>
             </svg>
@@ -116,4 +116,16 @@ export const renderRecipe = recipe => {
     
     `;
     elements.recipe.insertAdjacentHTML('afterbegin', markup);
+};
+
+export const updateServingsIngredients=recipe =>{
+    //update servings
+    document.querySelector(".recipe__info-data--people").textContent=recipe.servings;
+
+    //update ingredients
+    const countElements=Array.from(document.querySelectorAll(".recipe__count"));
+    //looping over two arrays at the same time (recipe ingredients array and count array) which is why wee need the "i"
+    countElements.forEach((el,i)=>{
+        el.textContent=formatCount(recipe.ingredients[i].count)
+    })
 };
